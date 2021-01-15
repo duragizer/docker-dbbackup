@@ -14,7 +14,7 @@ else
     SECONDS=0
 
     mariabackup --backup \
-	    --host=${DB_HOST} \
+        --host=${DB_HOST} \
         --target-dir=${TARGET_DIR} \
         --user=${DB_USER} --password=${DB_PASSWD} >> ${TARGET_DIR}my_output.log 2>>${TARGET_DIR}my_output.log
     
