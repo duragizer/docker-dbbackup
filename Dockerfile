@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-COPY ./scripts/daily/* /etc/periodic/daily
+COPY ./daily/* /etc/periodic/daily
 
 RUN apk update && \
     apk upgrade && \
