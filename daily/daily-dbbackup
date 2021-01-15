@@ -1,1 +1,24 @@
 #!/bin/sh
+
+find /var/mariadb/backup/* -type d -mmin +$((60*48)) -exec rm -rf {} \; # delete backup directories older than 48 hours
+
+DAY_DIR=/var/lib/mysql/backup/`date +%Y-%m`/
+TARGET_DIR=${DAY_DIR}`date +%d_%Hh_full`/
+
+if [[ -e $TARGET_DIR ]]
+then
+    printf "[`date --iso-8601=ns`] Directory ${TARGET_DIR} already exists\n" >> ${TARGET_DIR}my_error.log
+else
+    mkdir -p $TARGET_DIR
+
+    SECONDS=0
+
+    mariabackup --backup \
+	    --host=${DB_HOST} \
+        --target-dir=${TARGET_DIR} \
+        --user=${DB_USER} --password=${DB_PASSWD} >> ${TARGET_DIR}my_output.log 2>>${TARGET_DIR}my_output.log
+    
+    printf "completed in ${SECONDS} seconds\n" >> ${TARGET_DIR}my_output.log
+
+    printf $TARGET_DIR > ${DAY_DIR}last_completed_backup
+fi
